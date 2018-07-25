@@ -16,6 +16,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests {
+            // workaround for Android SDK methods 'not mocked'. When returnDefaultValues is true
+            // android.jar file returns zero or null
+            unitTests.returnDefaultValues = true
+            // workaround for java.lang.VerifyError: Expecting a stackmap frame at branch target 17
+            // in Flurry init in Robolectric tests
+            all {
+                jvmArgs '-noverify'
+            }
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -38,4 +51,7 @@ dependencies {
     }
 
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:2.19.1"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1"
+    testImplementation "org.robolectric:robolectric:3.8"
 }
