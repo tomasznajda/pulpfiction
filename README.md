@@ -1,6 +1,7 @@
 ![pulpfiction](https://raw.githubusercontent.com/tomasznajda/pulpfiction/master/logo.png)
 
 # pulpfiction
+[![CircleCI](https://circleci.com/gh/tomasznajda/pulpfiction.svg?style=svg)](https://circleci.com/gh/tomasznajda/pulpfiction)\
 Easy to use Android video and audio player build on ExoPlayer
 
 ## features
