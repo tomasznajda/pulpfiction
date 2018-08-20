@@ -16,6 +16,7 @@ import com.tomasznajda.pulpfiction.event.player.PlayerEvent
 import com.tomasznajda.pulpfiction.event.player.PlayerObservable
 import com.tomasznajda.pulpfiction.event.video.VideoEvent
 import com.tomasznajda.pulpfiction.event.video.VideoObservable
+import com.tomasznajda.pulpfiction.fullscreen.FullscreenDelegate
 import com.tomasznajda.pulpfiction.util.pulpFictionState
 import com.tomasznajda.pulpfiction.util.toMediaSource
 import io.reactivex.Observable
@@ -29,6 +30,9 @@ class PulpFiction(context: Context, config: PlayerConfig) : Player {
     override val events: Observable<PlayerEvent> by lazy { PlayerObservable(exoPlayer) }
     val state: PlayerState
         get() = exoPlayer.pulpFictionState
+
+    var fullscreen = FullscreenDelegate()
+        private set
 
     override var videoView: PfVideoView? = null
         set(value) {
@@ -68,6 +72,15 @@ class PulpFiction(context: Context, config: PlayerConfig) : Player {
     override fun release() {
         exoPlayer.release()
     }
+
+    fun enableFullscreen(enterFullscreenCallback: () -> Boolean, exitFullscreenCallback: () -> Boolean) =
+            fullscreen.enable(enterFullscreenCallback, exitFullscreenCallback)
+
+    fun disableFullscreen() = fullscreen.disable()
+
+    fun enterFullscreen() = fullscreen.enter()
+
+    fun exitFullscreen() = fullscreen.exit()
 
     private fun initVideoView(view: PfVideoView?) {
         view?.pulpFiction = this

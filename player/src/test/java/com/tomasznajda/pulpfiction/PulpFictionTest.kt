@@ -4,10 +4,7 @@ import android.app.Activity
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.nhaarman.mockitokotlin2.argThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.tomasznajda.pulpfiction.__util.assertEquals
 import com.tomasznajda.pulpfiction.__util.setupActivity
 import com.tomasznajda.pulpfiction.entity.Clip
@@ -17,6 +14,7 @@ import com.tomasznajda.pulpfiction.event.analitics.AnalyticsObservable
 import com.tomasznajda.pulpfiction.event.exoplayer.ExoPlayerObservable
 import com.tomasznajda.pulpfiction.event.player.PlayerObservable
 import com.tomasznajda.pulpfiction.event.video.VideoObservable
+import com.tomasznajda.pulpfiction.fullscreen.FullscreenDelegate
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -33,6 +31,7 @@ class PulpFictionTest {
 
     val activity = setupActivity(Activity::class)
     @Mock lateinit var exoPlayer: SimpleExoPlayer
+    @Mock lateinit var fullscreenDelegate: FullscreenDelegate
     @InjectMocks val pulpFiction = PulpFiction(activity, PlayerConfig())
 
     @Before
@@ -166,5 +165,29 @@ class PulpFictionTest {
     @Test
     fun `analyticsEvents emits AnalyticsEvents from ExoPlayer`() {
         assertTrue(pulpFiction.analyticsEvents is AnalyticsObservable)
+    }
+
+    @Test
+    fun `enableFullscreen invokes enable on delegate`() {
+        pulpFiction.enableFullscreen(mock(), mock())
+        verify(fullscreenDelegate).enable(any(), any())
+    }
+
+    @Test
+    fun `disableFullscreen invokes disable on delegate`() {
+        pulpFiction.disableFullscreen()
+        verify(fullscreenDelegate).disable()
+    }
+
+    @Test
+    fun `enterFullscreen invokes enter on delegate`() {
+        pulpFiction.enterFullscreen()
+        verify(fullscreenDelegate).enter()
+    }
+
+    @Test
+    fun `exitFullscreen invokes exit on delegate`() {
+        pulpFiction.exitFullscreen()
+        verify(fullscreenDelegate).exit()
     }
 }
