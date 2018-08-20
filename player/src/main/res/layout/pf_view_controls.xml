@@ -45,4 +45,27 @@
             android:visibility="gone"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
+    <ImageView
+            android:id="@+id/pfFullscreenEnter"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_fullscreen_enter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+    <ImageView
+            android:id="@+id/pfFullscreenExit"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_fullscreen_exit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
 </android.support.constraint.ConstraintLayout>
