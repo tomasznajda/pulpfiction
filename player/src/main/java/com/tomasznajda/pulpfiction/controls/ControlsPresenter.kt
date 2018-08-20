@@ -15,5 +15,15 @@ class ControlsPresenter : BasePresenter<ControlsContract.View>() {
                 ?.pauseClicks
                 ?.subscribeBy(onNext = { view?.pause() })
                 ?.save()
+
+        view
+                ?.enterFullscreenClicks
+                ?.subscribeBy(onNext = { view?.enterFullscreen() })
+                ?.save()
+
+        view
+                ?.exitFullscreenClicks
+                ?.subscribeBy(onNext = { view?.exitFullscreen() })
+                ?.save()
     }
 }

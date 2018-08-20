@@ -2,6 +2,7 @@ package com.tomasznajda.pulpfiction.controls
 
 import android.app.Activity
 import android.view.View
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.tomasznajda.pulpfiction.BuildConfig
@@ -43,6 +44,20 @@ class ControlsViewTest {
     }
 
     @Test
+    fun `enterFullscreenClicks emits event on pfFullscreenEnter button clicks`() {
+        val observer = view.enterFullscreenClicks.test()
+        view.pfFullscreenEnter.performClick()
+        observer.assertValue(Unit)
+    }
+
+    @Test
+    fun `exitFullscreenClicks emits event on pfFullscreenExit button clicks`() {
+        val observer = view.exitFullscreenClicks.test()
+        view.pfFullscreenExit.performClick()
+        observer.assertValue(Unit)
+    }
+
+    @Test
     fun `play invokes play on PulpFiction`() {
         val pulpFiction = mock<PulpFiction>()
         view.init(pulpFiction, mock())
@@ -59,11 +74,29 @@ class ControlsViewTest {
     }
 
     @Test
+    fun `enterFullscreen invokes enterFullscreen on PulpFiction`() {
+        val pulpFiction = mock<PulpFiction>()
+        view.init(pulpFiction, mock())
+        view.enterFullscreen()
+        verify(pulpFiction).enterFullscreen()
+    }
+
+    @Test
+    fun `exitFullscreen invokes exitFullscreen on PulpFiction`() {
+        val pulpFiction = mock<PulpFiction>()
+        view.init(pulpFiction, mock())
+        view.exitFullscreen()
+        verify(pulpFiction).exitFullscreen()
+    }
+
+    @Test
     fun `render changes play button visibility to VISIBLE when playVisibility is VISIBLE`() {
         val state = mock<ControlsViewState> {
-            on { playVisibility }.thenReturn(View.VISIBLE)
-            on { pauseVisibility }.thenReturn(View.GONE)
-            on { progressVisibility }.thenReturn(View.GONE)
+            on { playVisibility }.doReturn(View.VISIBLE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
         }
         view.pfPlay.visibility = View.INVISIBLE
         view.render(state)
@@ -73,9 +106,11 @@ class ControlsViewTest {
     @Test
     fun `render changes play button visibility to GONE when playVisibility is GONE`() {
         val state = mock<ControlsViewState> {
-            on { playVisibility }.thenReturn(View.GONE)
-            on { pauseVisibility }.thenReturn(View.GONE)
-            on { progressVisibility }.thenReturn(View.GONE)
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
         }
         view.pfPlay.visibility = View.INVISIBLE
         view.render(state)
@@ -85,9 +120,11 @@ class ControlsViewTest {
     @Test
     fun `render changes pause button visibility to VISIBLE when pauseVisibility is VISIBLE`() {
         val state = mock<ControlsViewState> {
-            on { playVisibility }.thenReturn(View.GONE)
-            on { pauseVisibility }.thenReturn(View.VISIBLE)
-            on { progressVisibility }.thenReturn(View.GONE)
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.VISIBLE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
         }
         view.pfPlay.visibility = View.INVISIBLE
         view.render(state)
@@ -97,9 +134,11 @@ class ControlsViewTest {
     @Test
     fun `render changes pause button visibility to GONE when pauseVisibility is GONE`() {
         val state = mock<ControlsViewState> {
-            on { playVisibility }.thenReturn(View.GONE)
-            on { pauseVisibility }.thenReturn(View.GONE)
-            on { progressVisibility }.thenReturn(View.GONE)
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
         }
         view.pfPause.visibility = View.INVISIBLE
         view.render(state)
@@ -109,9 +148,11 @@ class ControlsViewTest {
     @Test
     fun `render changes progress visibility to VISIBLE when progressVisibility is VISIBLE`() {
         val state = mock<ControlsViewState> {
-            on { playVisibility }.thenReturn(View.GONE)
-            on { pauseVisibility }.thenReturn(View.GONE)
-            on { progressVisibility }.thenReturn(View.VISIBLE)
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.VISIBLE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
         }
         view.pfProgress.visibility = View.INVISIBLE
         view.render(state)
@@ -121,12 +162,70 @@ class ControlsViewTest {
     @Test
     fun `render changes progress visibility to GONE when progressVisibility is GONE`() {
         val state = mock<ControlsViewState> {
-            on { playVisibility }.thenReturn(View.GONE)
-            on { pauseVisibility }.thenReturn(View.GONE)
-            on { progressVisibility }.thenReturn(View.GONE)
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
         }
         view.pfProgress.visibility = View.INVISIBLE
         view.render(state)
         assertEquals(expected = View.GONE, actual = view.pfProgress.visibility)
+    }
+
+    @Test
+    fun `render changes enter fullscreen visibility to VISIBLE when enterFullscreenVisibility is VISIBLE`() {
+        val state = mock<ControlsViewState> {
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.VISIBLE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
+        }
+        view.pfFullscreenEnter.visibility = View.INVISIBLE
+        view.render(state)
+        assertEquals(expected = View.VISIBLE, actual = view.pfFullscreenEnter.visibility)
+    }
+
+    @Test
+    fun `render changes enter fullscreen visibility to GONE when enterFullscreenVisibility is GONE`() {
+        val state = mock<ControlsViewState> {
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
+        }
+        view.pfFullscreenEnter.visibility = View.INVISIBLE
+        view.render(state)
+        assertEquals(expected = View.GONE, actual = view.pfFullscreenEnter.visibility)
+    }
+
+    @Test
+    fun `render changes exit fullscreen visibility to VISIBLE when exitFullscreenVisibility is VISIBLE`() {
+        val state = mock<ControlsViewState> {
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.VISIBLE)
+        }
+        view.pfFullscreenExit.visibility = View.INVISIBLE
+        view.render(state)
+        assertEquals(expected = View.VISIBLE, actual = view.pfFullscreenExit.visibility)
+    }
+
+    @Test
+    fun `render changes exit fullscreen visibility to GONE when exitFullscreenVisibility is GONE`() {
+        val state = mock<ControlsViewState> {
+            on { playVisibility }.doReturn(View.GONE)
+            on { pauseVisibility }.doReturn(View.GONE)
+            on { progressVisibility }.doReturn(View.GONE)
+            on { enterFullscreenVisibility }.doReturn(View.GONE)
+            on { exitFullscreenVisibility }.doReturn(View.GONE)
+        }
+        view.pfFullscreenExit.visibility = View.INVISIBLE
+        view.render(state)
+        assertEquals(expected = View.GONE, actual = view.pfFullscreenExit.visibility)
     }
 }
