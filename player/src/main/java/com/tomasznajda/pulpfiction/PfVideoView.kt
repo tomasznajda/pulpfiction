@@ -7,10 +7,11 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.tomasznajda.pulpfiction.entity.ControlsViewState
 import com.tomasznajda.pulpfiction.entity.PlayerState
-import com.tomasznajda.pulpfiction.event.player.PlayerInfo
+import com.tomasznajda.pulpfiction.fullscreen.FullscreenState
 import com.tomasznajda.pulpfiction.util.gone
 import com.tomasznajda.pulpfiction.util.inflate
 import com.tomasznajda.pulpfiction.util.visible
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.pf_layer_background.view.*
@@ -25,6 +26,13 @@ class PfVideoView : FrameLayout {
             pfPlayerView.player = value?.exoPlayer
             if (value != null) init(value) else deinit()
         }
+
+    private val playerState: PlayerState
+        get() = pulpFiction?.state ?: PlayerState.IDLE
+    private val fullscreenState: FullscreenState
+        get() = pulpFiction?.fullscreen?.state ?: FullscreenState.DISABLED
+    private val controlsViewState: ControlsViewState
+        get() = ControlsViewState(playerState, fullscreenState)
 
     private val disposables = CompositeDisposable()
 
@@ -61,11 +69,11 @@ class PfVideoView : FrameLayout {
 
     private fun init(pulpFiction: PulpFiction) {
         pfControlsView.init(pulpFiction, this)
-        pulpFiction
-                .events
-                .filter { it is PlayerInfo }
-                .doOnNext { render((it as PlayerInfo).state) }
-                .doOnNext { pfControlsView.render(ControlsViewState(pulpFiction.state)) }
+        Observable.merge(
+                pulpFiction.events.map { Unit },
+                pulpFiction.fullscreen.stateChanges.map { Unit })
+                .doOnNext { render(playerState) }
+                .doOnNext { pfControlsView.render(controlsViewState) }
                 .subscribe()
                 .addTo(disposables)
     }

@@ -1,5 +1,6 @@
 package com.tomasznajda.pulpfiction.sample.main
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -7,6 +8,9 @@ import com.jaredrummler.materialspinner.MaterialSpinner
 import com.tomasznajda.pulpfiction.PulpFiction
 import com.tomasznajda.pulpfiction.entity.PlayerConfig
 import com.tomasznajda.pulpfiction.sample.*
+import com.tomasznajda.pulpfiction.sample.util.UiMode
+import com.tomasznajda.pulpfiction.sample.util.hideAllChildrenExcept
+import com.tomasznajda.pulpfiction.sample.util.showAllChildren
 import com.tomasznajda.pulpfiction.util.gone
 import com.tomasznajda.pulpfiction.util.load
 import com.tomasznajda.pulpfiction.util.visible
@@ -35,9 +39,15 @@ class MainActivity : AppCompatActivity() {
         initVideoField()
         initPlaceholderField()
         initTransparentBackgroundField()
+        initFullscreenField()
 
         switchVideo.isChecked = true
         switchPlaceholder.isChecked = true
+    }
+
+    override fun onBackPressed() {
+        if(player?.fullscreen?.state?.isOn == true) player?.exitFullscreen()
+        else super.onBackPressed()
     }
 
     override fun onDestroy() {
@@ -71,6 +81,38 @@ class MainActivity : AppCompatActivity() {
             (if (isChecked) android.R.color.transparent else android.R.color.black)
                     .let { ContextCompat.getColor(this, it) }
                     .let { playerView.setShutterBackgroundColor(it) }
+        }
+    }
+
+    private fun initFullscreenField() {
+        switchFullscreen.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) player?.enableFullscreen({ enterIntoFullscreenMode(); true }, { exitFromFullscreenMode(); true })
+            else player?.disableFullscreen()
+        }
+    }
+
+    private fun enterIntoFullscreenMode() {
+        changeScreenMode(
+                showPlayerOnly = true,
+                uiMode = UiMode.FULLSCREEN_ENABLED,
+                orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
+    }
+
+    private fun exitFromFullscreenMode() {
+        changeScreenMode(
+                showPlayerOnly = false,
+                uiMode = UiMode.FULLSCREEN_DISABLED,
+                orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    }
+
+    private fun changeScreenMode(showPlayerOnly: Boolean,
+                                 uiMode: UiMode,
+                                 orientation: Int) {
+        window?.decorView?.systemUiVisibility = uiMode.flag
+        requestedOrientation = orientation
+        when {
+            showPlayerOnly -> root?.hideAllChildrenExcept(R.id.playerView)
+            else -> root?.showAllChildren()
         }
     }
 

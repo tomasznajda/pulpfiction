@@ -14,11 +14,15 @@ class ControlsPresenterTest {
 
     val playClicksSubject = PublishSubject.create<Unit>()
     val pauseClicksSubject = PublishSubject.create<Unit>()
+    val enterFullscreenClicksSubject = PublishSubject.create<Unit>()
+    val exitFullscreenClicksSubject = PublishSubject.create<Unit>()
 
     @Before
     fun setUp() {
         whenever(view.playClicks).thenReturn(playClicksSubject)
         whenever(view.pauseClicks).thenReturn(pauseClicksSubject)
+        whenever(view.enterFullscreenClicks).thenReturn(enterFullscreenClicksSubject)
+        whenever(view.exitFullscreenClicks).thenReturn(exitFullscreenClicksSubject)
     }
 
     @Test
@@ -33,5 +37,19 @@ class ControlsPresenterTest {
         presenter.attach(view)
         pauseClicksSubject.onNext(Unit)
         verify(view).pause()
+    }
+
+    @Test
+    fun `enterFullscreenClick invokes enterFullscreen`() {
+        presenter.attach(view)
+        enterFullscreenClicksSubject.onNext(Unit)
+        verify(view).enterFullscreen()
+    }
+
+    @Test
+    fun `exitFullscreenClick invokes exitFullscreen`() {
+        presenter.attach(view)
+        exitFullscreenClicksSubject.onNext(Unit)
+        verify(view).exitFullscreen()
     }
 }

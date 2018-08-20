@@ -17,6 +17,10 @@ class ControlsView : BaseView<ControlsContract.View>, ControlsContract.View {
 
     override val pauseClicks by lazy { pfPause.clicks() }
 
+    override val enterFullscreenClicks by lazy { pfFullscreenEnter.clicks() }
+
+    override val exitFullscreenClicks by lazy { pfFullscreenExit.clicks() }
+
     override val presenter = ControlsPresenter()
 
     private var pulpFiction: PulpFiction? = null
@@ -43,6 +47,8 @@ class ControlsView : BaseView<ControlsContract.View>, ControlsContract.View {
         pfPlay.visibility = state.playVisibility
         pfPause.visibility = state.pauseVisibility
         pfProgress.visibility = state.progressVisibility
+        pfFullscreenEnter.visibility = state.enterFullscreenVisibility
+        pfFullscreenExit.visibility = state.exitFullscreenVisibility
     }
 
     override fun play() {
@@ -51,5 +57,13 @@ class ControlsView : BaseView<ControlsContract.View>, ControlsContract.View {
 
     override fun pause() {
         pulpFiction?.pause()
+    }
+
+    override fun enterFullscreen() {
+        pulpFiction?.enterFullscreen()
+    }
+
+    override fun exitFullscreen() {
+        pulpFiction?.exitFullscreen()
     }
 }

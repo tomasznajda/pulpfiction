@@ -9,7 +9,7 @@ Easy to use Android video and audio player build on ExoPlayer
 ☑ play/pause/loading views\
 ☑ image for idle mode\
 ☐ info and error events\
-☐ fullscreen mode\
+☑ fullscreen mode\
 ☐ picture in picture mode\
 ☐ chromecast support\
 ☐ quality selection\
